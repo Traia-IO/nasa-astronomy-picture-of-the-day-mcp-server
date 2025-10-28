@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  nasa-astronomy-picture-of-the-day-mcp:
+    build: .
+    container_name: nasa-astronomy-picture-of-the-day-mcp-server
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - STAGE=${STAGE:-MAINNET}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - NASA_ASTRONOMY_PICTURE_OF_THE_DAY_API_KEY=${NASA_ASTRONOMY_PICTURE_OF_THE_DAY_API_KEY}    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3 

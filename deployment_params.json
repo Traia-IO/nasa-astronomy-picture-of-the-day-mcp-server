@@ -1,0 +1,20 @@
+{
+  "github_url": "https://github.com/Traia-IO/nasa-astronomy-picture-of-the-day-mcp-server",
+  "mcp_server": {
+    "name": "nasa-astronomy-picture-of-the-day-mcp",
+    "description": "Nasa apod api integration for astronomy data",
+    "server_type": "streamable-http",
+    "requires_api_key": true,
+"api_key_header": "Authorization",
+    "api_keys": ["NASA_ASTRONOMY_PICTURE_OF_THE_DAY_API_KEY"],
+"capabilities": [
+      "example_tool",
+      "get_api_info"
+    ]
+  },
+  "deployment_method": "cloud_run",
+  "gcp_project_id": "traia-mcp-servers",
+  "gcp_region": "us-central1",
+  "tags": ["nasa astronomy picture of the day", "api", "mcp"],
+  "ref": "main"
+} 

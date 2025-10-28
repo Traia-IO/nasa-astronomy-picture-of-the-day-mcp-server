@@ -1,2 +1,188 @@
-# nasa-astronomy-picture-of-the-day-mcp-server
-MCP server for NASA Astronomy Picture of the Day API integration
+# NASA Astronomy Picture of the Day MCP Server
+
+This is an MCP (Model Context Protocol) server that provides with authentication via Bearer tokens access to the NASA Astronomy Picture of the Day API. It enables AI agents and LLMs to interact with NASA Astronomy Picture of the Day through standardized tools.
+
+## Features
+
+- 🔧 **MCP Protocol**: Built on the Model Context Protocol for seamless AI integration
+- 🌐 **Full API Access**: Provides tools for interacting with NASA Astronomy Picture of the Day endpoints
+- 🔐 **Secure Authentication**: Supports API key authentication via Bearer tokens
+- 🐳 **Docker Support**: Easy deployment with Docker and Docker Compose
+- ⚡ **Async Operations**: Built with FastMCP for efficient async handling
+
+## API Documentation
+
+- **NASA Astronomy Picture of the Day Website**: [https://api.nasa.gov/planetary/apod](https://api.nasa.gov/planetary/apod)
+- **API Documentation**: [https://api.nasa.gov/](https://api.nasa.gov/)
+
+## Available Tools
+
+This server provides the following tools:
+
+- **`example_tool`**: Placeholder tool (to be implemented)
+- **`get_api_info`**: Get information about the API service and authentication status
+
+*Note: Replace `example_tool` with actual NASA Astronomy Picture of the Day API tools based on the documentation.*
+
+## Installation
+
+### Using Docker (Recommended)
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/Traia-IO/nasa-astronomy-picture-of-the-day-mcp-server.git
+   cd nasa-astronomy-picture-of-the-day-mcp-server
+   ```
+
+2. Set your API key:
+   ```bash
+   export NASA_ASTRONOMY_PICTURE_OF_THE_DAY_API_KEY="your-api-key-here"
+   ```
+
+3. Run with Docker:
+   ```bash
+   ./run_local_docker.sh
+   ```
+
+### Using Docker Compose
+
+1. Create a `.env` file with your configuration:
+   ```env
+NASA_ASTRONOMY_PICTURE_OF_THE_DAY_API_KEY=your-api-key-here
+PORT=8000
+   ```
+
+2. Start the server:
+   ```bash
+   docker-compose up
+   ```
+
+### Manual Installation
+
+1. Install dependencies using `uv`:
+   ```bash
+   uv pip install -e .
+   ```
+
+2. Run the server:
+   ```bash
+NASA_ASTRONOMY_PICTURE_OF_THE_DAY_API_KEY="your-api-key-here" uv run python -m server
+   ```
+
+## Usage
+
+### Health Check
+
+Test if the server is running:
+```bash
+python mcp_health_check.py
+```
+
+### Using with CrewAI
+
+```python
+from traia_iatp.mcp.traia_mcp_adapter import create_mcp_adapter_with_auth
+
+# Connect with authentication
+with create_mcp_adapter_with_auth(
+    url="http://localhost:8000/mcp/",
+    api_key="your-api-key"
+) as tools:
+    # Use the tools
+    for tool in tools:
+        print(f"Available tool: {tool.name}")
+        
+    # Example usage
+    result = await tool.example_tool(query="test")
+    print(result)
+```
+
+## Authentication
+
+This server requires API key authentication. Clients must provide their API key in the `Authorization` header:
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
+
+The API key is then used to authenticate requests to the NASA Astronomy Picture of the Day API.
+
+## Development
+
+### Testing the Server
+
+1. Start the server locally
+2. Run the health check: `python mcp_health_check.py`
+3. Test individual tools using the CrewAI adapter
+
+### Adding New Tools
+
+To add new tools, edit `server.py` and:
+
+1. Create API client functions for NASA Astronomy Picture of the Day endpoints
+2. Add `@mcp.tool()` decorated functions
+3. Update this README with the new tools
+4. Update `deployment_params.json` with the tool names in the capabilities array
+
+## Deployment
+
+### Deployment Configuration
+
+The `deployment_params.json` file contains the deployment configuration for this MCP server:
+
+```json
+{
+  "github_url": "https://github.com/Traia-IO/nasa-astronomy-picture-of-the-day-mcp-server",
+  "mcp_server": {
+    "name": "nasa-astronomy-picture-of-the-day-mcp",
+    "description": "Nasa apod api integration for astronomy data",
+    "server_type": "streamable-http",
+"requires_api_key": true,
+    "api_key_header": "Authorization",
+"capabilities": [
+      // List all implemented tool names here
+      "example_tool",
+      "get_api_info"
+    ]
+  },
+  "deployment_method": "cloud_run",
+  "gcp_project_id": "traia-mcp-servers",
+  "gcp_region": "us-central1",
+  "tags": ["nasa astronomy picture of the day", "api"],
+  "ref": "main"
+}
+```
+
+**Important**: Always update the `capabilities` array when you add or remove tools!
+
+### Google Cloud Run
+
+This server is designed to be deployed on Google Cloud Run. The deployment will:
+
+1. Build a container from the Dockerfile
+2. Deploy to Cloud Run with the specified configuration
+3. Expose the `/mcp` endpoint for client connections
+
+## Environment Variables
+
+- `PORT`: Server port (default: 8000)
+- `STAGE`: Environment stage (default: MAINNET, options: MAINNET, TESTNET)
+- `LOG_LEVEL`: Logging level (default: INFO)
+- `NASA_ASTRONOMY_PICTURE_OF_THE_DAY_API_KEY`: Your NASA Astronomy Picture of the Day API key (required)
+## Troubleshooting
+
+1. **Server not starting**: Check Docker logs with `docker logs <container-id>`
+2. **Authentication errors**: Ensure your API key is correctly set in the environment
+3. **API errors**: Verify your API key has the necessary permissions3. **Tool errors**: Check the server logs for detailed error messages
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Implement new tools or improvements
+4. Update the README and deployment_params.json
+5. Submit a pull request
+
+## License
+
+[MIT License](LICENSE)

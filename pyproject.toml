@@ -1,0 +1,23 @@
+[project]
+name = "nasa-astronomy-picture-of-the-day-mcp-server"
+version = "0.1.0"
+description = "MCP server for NASA Astronomy Picture of the Day API with authentication support"
+requires-python = ">=3.12"
+dependencies = [
+    "fastmcp>=2.10.1",
+    "python-dotenv>=1.1.1",
+    "requests>=2.32.4",
+    "starlette>=0.46.2",
+    "retry>=0.9.2",
+    "nasapy",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "server.py",
+    "mcp_health_check.py",
+] 
